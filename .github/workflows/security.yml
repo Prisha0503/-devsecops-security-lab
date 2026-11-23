@@ -27,7 +27,7 @@ jobs:
             --config /repo/.gitleaks.toml \
             --exit-code 1
 
-  sast-scan:
+    sast-scan:
     name: SAST Scan
     runs-on: ubuntu-latest
 

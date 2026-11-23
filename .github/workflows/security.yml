@@ -11,14 +11,7 @@ jobs:
   secret-scan:
     name: Secret Scan
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f544e0f2ed9 # v4.2.2
-        with:
-          fetch-depth: 0
-
-      steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f544e0f2ed9 # v4.2.2
         with:
@@ -36,10 +29,9 @@ jobs:
   sast-scan:
     name: SAST Scan
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f544e0f2ed9 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f544e0f2ed9 # v4.2.2
 
       - name: Install Semgrep
         run: pip install semgrep
@@ -50,7 +42,6 @@ jobs:
   dependency-scan:
     name: Dependency Scan
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f544e0f2ed9 # v4.2.2

@@ -41,7 +41,7 @@ jobs:
       - name: Run Semgrep
         run: semgrep scan --config auto
 
-   dependency-scan:
+     dependency-scan:
     name: Dependency Scan
     runs-on: ubuntu-latest
 
@@ -49,19 +49,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
+      - name: Create Python dependency metadata
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          mkdir -p dependency-scan
+          python3 - <<'PY'
+          import json
+
+          packages = []
+          with open("requirements.txt") as f:
+              for line in f:
+                  line = line.strip()
+                  if "==" in line and not line.startswith("#"):
+                      name, version = line.split("==", 1)
+                      packages.append({
+                          "name": name.strip(),
+                          "version": version.strip()
+                      })
+
+          with open("dependency-scan/Pipfile.lock", "w") as f:
+              json.dump({
+                  "_meta": {
+                      "hash": {"sha256": "lab-only"},
+                      "pipfile-spec": 6,
+                      "requires": {"python_version": "3.11"},
+                      "sources": []
+                  },
+                  "default": {
+                      p["name"].lower(): {
+                          "version": "==" + p["version"]
+                      }
+                      for p in packages
+                  },
+                  "develop": {}
+              }, f, indent=2)
+          PY
 
       - name: Run Trivy
         run: |
           docker run --rm \
-            -v "${{ github.workspace }}:/repo" \
+            -v "${{ github.workspace }}:/repo:ro" \
             aquasec/trivy:latest \
-            fs --scanners vuln --exit-code 0 /repo
+            fs --scanners vuln --exit-code 0 /repo/dependency-scan

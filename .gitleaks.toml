@@ -1,0 +1,7 @@
+title = "DevSecOps Security Lab"
+
+[[rules]]
+id = "fake-aws-secret"
+description = "Detect planted AWS example credentials"
+regex = '''AKIAIOSFODNN7EXAMPLE'''
+tags = ["secret", "aws", "lab"]

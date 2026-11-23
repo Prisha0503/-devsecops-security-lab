@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-   secret-scan:
+  secret-scan:
     name: Secret Scan
     runs-on: ubuntu-latest
 
